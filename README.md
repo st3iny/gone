@@ -16,11 +16,12 @@ ARGS:
 
 OPTIONS:
     -h, --help             Print help information
-    -n, --dry-run          
+    -n, --dry-run          Don't persist but only print changesjk
         --org <ORG>        Organization owning the packages (conflicts with --user)
         --token <TOKEN>    Path to a file containing a GitHub token. You can also pass a token
                            verbatim via the GITHUB_TOKEN env variable
         --user <USER>      User owning the packages (conflicts with --org)
-    -v, --verbose          
+    -v, --verbose          Make logging more verbose. You can also specify the log level via the
+                           RUST_LOG env variable
     -V, --version          Print version information
 ```

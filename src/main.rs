@@ -27,12 +27,12 @@ struct Args {
     #[clap(long)]
     token: Option<String>,
 
-    // Don't persist but only print changesjk
+    /// Don't persist but only print changesjk
     #[clap(long, short = 'n')]
     dry_run: bool,
 
-    // Make logging more verbose.
-    // You can also specify the log level via the RUST_LOG env variable.
+    /// Make logging more verbose.
+    /// You can also specify the log level via the RUST_LOG env variable.
     #[clap(long, short)]
     verbose: bool,
 
