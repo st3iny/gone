@@ -16,7 +16,7 @@ ARGS:
 
 OPTIONS:
     -h, --help             Print help information
-    -n, --dry-run          Don't persist but only print changesjk
+    -n, --dry-run          Don't persist but only print changes
         --org <ORG>        Organization owning the packages (conflicts with --user)
         --token <TOKEN>    Path to a file containing a GitHub token. You can also pass a token
                            verbatim via the GITHUB_TOKEN env variable

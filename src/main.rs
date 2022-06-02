@@ -27,7 +27,7 @@ struct Args {
     #[clap(long)]
     token: Option<String>,
 
-    /// Don't persist but only print changesjk
+    /// Don't persist but only print changes
     #[clap(long, short = 'n')]
     dry_run: bool,
 
