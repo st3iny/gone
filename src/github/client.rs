@@ -1,6 +1,7 @@
-use anyhow::{anyhow, Context, Result};
 use std::fmt::Display;
 
+use anyhow::{anyhow, Context, Result};
+use async_trait::async_trait;
 use reqwest::{
     header::{HeaderMap, ACCEPT, AUTHORIZATION, USER_AGENT},
     Client, ClientBuilder,
@@ -8,6 +9,7 @@ use reqwest::{
 
 use super::PackageVersion;
 
+#[derive(Debug, Clone, PartialEq)]
 pub enum PackageOwner {
     User(String),
     Organizaion(String),
@@ -43,11 +45,11 @@ impl Display for PackageOwner {
     }
 }
 
-pub struct GithubClient {
+pub struct GithubClientImpl {
     client: Client,
 }
 
-impl GithubClient {
+impl GithubClientImpl {
     pub fn new(token: impl AsRef<str>) -> Result<Self> {
         let user_agent = format!("{}/{}", env!("CARGO_PKG_NAME"), env!("CARGO_PKG_VERSION"));
         log::debug!("{}: {}", USER_AGENT.as_str(), user_agent);
@@ -63,11 +65,32 @@ impl GithubClient {
         let client = ClientBuilder::new().default_headers(headers).build()?;
         Ok(Self { client })
     }
+}
 
-    pub async fn get_package_version(
+#[async_trait]
+#[cfg_attr(test, mockall::automock)]
+pub trait GithubClient {
+    async fn get_package_version(
         &self,
         owner: &PackageOwner,
-        package_name: impl Display,
+        package_name: &str,
+        page: Option<u32>,
+    ) -> Result<Vec<PackageVersion>>;
+
+    async fn delete_package_version(
+        &self,
+        owner: &PackageOwner,
+        package_name: &str,
+        version_id: &str,
+    ) -> Result<()>;
+}
+
+#[async_trait]
+impl GithubClient for GithubClientImpl {
+    async fn get_package_version(
+        &self,
+        owner: &PackageOwner,
+        package_name: &str,
         page: Option<u32>,
     ) -> Result<Vec<PackageVersion>> {
         let response = self
@@ -95,11 +118,11 @@ impl GithubClient {
         Ok(versions)
     }
 
-    pub async fn delete_package_version(
+    async fn delete_package_version(
         &self,
         owner: &PackageOwner,
-        package_name: impl Display,
-        version_id: impl Display,
+        package_name: &str,
+        version_id: &str,
     ) -> Result<()> {
         // The endpoint always returns 204 even if the version id is invalid.
         self.client
