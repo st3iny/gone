@@ -1,0 +1,8 @@
+FROM alpine
+
+RUN apk add --no-cache ca-certificates
+
+ARG TARGET=aarch64-unknown-linux-musl
+COPY target/${TARGET}/release/gone /usr/local/bin
+
+ENTRYPOINT ["/usr/local/bin/gone"]
